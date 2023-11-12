@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Emoji Guessing Game</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #1a1a1a; /* Dark background color */
+            margin: 0;
+            color: #ffffff; /* Text color */
+        }
+
+        .welcome-container {
+            background-color: #2d2d2d; /* Darker container background color */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: #ffcc00; /* Vibrant yellow */
+        }
+
+        p {
+            color: #cccccc; /* Light gray */
+            font-size: 1.2em;
+        }
+
+        button {
+            font-size: 1em;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Animated emoji */
+        .emoji {
+            font-size: 2em;
+            margin-top: 20px;
+            animation: bounce 1s infinite alternate;
+        }
+
+        @keyframes bounce {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="welcome-container">
+        <h1>Welcome to EmojiRix!</h1>
+        <p>Are you ready for some emoji fun? Test your emoji knowledge and compete with your friends. Click the button below to start the game!</p>
+        <div class="emoji">😃</div>
+        <button onclick="startGame()">Start Game</button>
+    </div>
+
+    <script>
+        function startGame() {
+            window.location.href = 'game.html'; // Replace with the actual filename of your game page
+        }
+    </script>
+
+</body>
+
+</html>

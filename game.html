@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Guessing Game</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            display: flex;
+            justify-content: space-around;
+            background: linear-gradient(to right, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 200% 100%;
+            animation: gradientBG 10s ease infinite;
+            margin: 0;
+            height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .team-container {
+            margin-top: 50px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 350px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        #emoji-display,
+        #emoji-display-b {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .serial-number {
+            font-size: 1.5em;
+            color: #888;
+        }
+
+        button {
+            font-size: 1em;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        button.decrement {
+            background-color: #e53935;
+            /* Red color */
+        }
+
+        button.back {
+            background-color: #2196F3;
+            /* Change this to the desired color */
+        }
+
+        #result,
+        #result-b {
+            margin-top: 10px;
+            font-size: 1.2em;
+            color: gold;
+            font-weight: bold;
+            background-color: #333;
+        }
+
+        .team-scores {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        /* Custom styles for scores */
+        .correct-score {
+            color: #4CAF50;
+            /* Green color for correct score */
+            font-weight: bold;
+        }
+
+        .incorrect-score {
+            color: #e53935;
+            /* Red color for incorrect score */
+            font-weight: bold;
+        }
+
+        #timer {
+            font-size: 1.5em;
+            color: white;
+            margin-top: 20px;
+        }
+
+
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            /* Add this line */
+        }
+
+        #winner-message {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        #party-popper {
+            font-size: 3em;
+            animation: partyPopperAnimation 2s ease infinite, rotate360 2s linear infinite;
+        }
+
+        #gaming-winner-view {
+            font-size: 3em;
+            margin-top: 20px;
+        }
+
+        #close-modal {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #close-modal:hover {
+            background-color: #45a049;
+        }
+
+        /* Add keyframes for the party popper animation */
+        @keyframes partyPopperAnimation {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-30px);
+            }
+
+            60% {
+                transform: translateY(-15px);
+            }
+        }
+
+
+        .container {
+            position: relative;
+            height: 100%;
+            /* Set the height of your container */
+            width: auto;
+            /* Set the width of your container */
+
+        }
+
+        .bottom-button {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="team-container" id="team-a">
+        <h2>Team A</h2>
+
+        <div id="emoji-display"></div>
+        <div class="serial-number" id="serial-number-a"></div>
+        <button onclick="revealAnswer('A')">Check Answer</button>
+        <p id="result"></p><br>
+        <button onclick="prevEmoji('A')" id="prev-btn-a" class="back">Back</button>
+        <button onclick="nextEmoji('A')" id="next-btn-a">Next Emoji</button><br><br>
+        <button onclick="incrementScore('A')">+</button>
+        <button onclick="incrementIncorrect('A')" class="decrement">-</button>
+        <div class="team-scores" id="team-scores-a">Team A: <span class="correct-score">0</span> correct, <span
+                class="incorrect-score">0</span> incorrect</div>
+    </div>
+    <div class="container">
+        <div id="timer">Timer: <span id="timer-display">30</span> seconds</div>
+        <!-- Add the Finish button -->
+        <button onclick="finishGame()" class="bottom-button">Finish Game</button>
+    </div>
+
+
+    <div class="team-container" id="team-b">
+        <h2>Team B</h2>
+
+        <div id="emoji-display-b"></div>
+        <div class="serial-number" id="serial-number-b"></div>
+        <button onclick="revealAnswer('B')">Check Answer</button>
+        <p id="result-b"></p><br>
+        <button onclick="prevEmoji('B')" id="prev-btn-b" class="back">Back</button>
+        <button onclick="nextEmoji('B')" id="next-btn-b">Next Emoji</button><br><br>
+        <button onclick="incrementScore('B')">+</button>
+        <button onclick="incrementIncorrect('B')" class="decrement">-</button>
+        <div class="team-scores" id="team-scores-b">Team B: <span class="correct-score">0</span> correct, <span
+                class="incorrect-score">0</span> incorrect</div>
+    </div>
+
+
+    <!-- Add the winner modal -->
+    <div id="winnerModal" class="modal">
+        <div class="modal-content">
+            <div id="party-popper">🎉</div>
+            <p id="winner-message"></p>
+            <div id="gaming-winner-view">🎮</div>
+            <button id="close-modal" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+
+
+    <script>
+        const emojiDataA = [
+            { slno: "1", emoji: "😢", name: "Crying Face" },
+            { slno: "2", emoji: "✋", name: "Raised Hand" },
+            { slno: "3", emoji: "🎊", name: "Confetti Ball" },
+            { slno: "4", emoji: "🥺", name: "Pleading Face" },
+            { slno: "5", emoji: "💯", name: "Hundred Points" },
+            { slno: "6", emoji: "😇", name: "Smiling Face with Halo" },
+            { slno: "7", emoji: "📇", name: "Card Index" },
+            { slno: "8", emoji: "🌺", name: "Hibiscus" },
+            { slno: "9", emoji: "🎩", name: "Top Hat" },
+            { slno: "10", emoji: "🎨", name: "Palette" },
+            { slno: "11", emoji: "😋", name: "Face Savoring Food" },
+            { slno: "12", emoji: "🎯", name: "Direct Hit" },
+            { slno: "13", emoji: "🤣", name: "Rolling on the Floor Laughing" },
+            { slno: "14", emoji: "📎", name: "Paperclip" },
+            { slno: "15", emoji: "👽", name: "Alien" },
+            { slno: "16", emoji: "🏀", name: "Basketball" },
+            { slno: "17", emoji: "🚁", name: "Helicopter" },
+            { slno: "18", emoji: "🏰", name: "Castle" },
+            { slno: "19", emoji: "🌋", name: "Volcano" },
+            { slno: "20", emoji: "😱", name: "Face Screaming in Fear" }
+        ];
+
+        const emojiDataB = [
+            { slno: "1", emoji: "😉", name: "Winking Face" },
+            { slno: "2", emoji: "✌️", name: "Victory Hand" },
+            { slno: "3", emoji: "🎉", name: "Party Popper" },
+            { slno: "4", emoji: "🚗", name: "Car" },
+            { slno: "5", emoji: "😭", name: "Loudly Crying Face" },
+            { slno: "6", emoji: "📢", name: "Loudspeaker" },
+            { slno: "7", emoji: "🏖️", name: "Beach with Umbrella" },
+            { slno: "8", emoji: "🌮", name: "Taco" },
+            { slno: "9", emoji: "🙈", name: "See-No-Evil Monkey" },
+            { slno: "10", emoji: "🚲", name: "Bicycle" },
+            { slno: "11", emoji: "🎧", name: "Headphones" },
+            { slno: "12", emoji: "🏔️", name: "Snow-capped Mountain" },
+            { slno: "13", emoji: "🎮", name: "Video Game" },
+            { slno: "14", emoji: "🍔", name: "Hamburger" },
+            { slno: "15", emoji: "📌", name: "Pushpin" },
+            { slno: "16", emoji: "🙄", name: "Face with Rolling Eyes" },
+            { slno: "17", emoji: "🍸", name: " Cocktail Glass" },
+            { slno: "18", emoji: "🤷‍♀️", name: "Woman Shrugging" },
+            { slno: "19", emoji: "🍇", name: "Grapes" },
+            { slno: "20", emoji: "👾", name: "Alien Monster" }
+        ];
+
+
+        let currentEmojiIndexA = 0;
+        let teamAScore = { correct: 0, incorrect: 0 };
+
+        let currentEmojiIndexB = 0;
+        let teamBScore = { correct: 0, incorrect: 0 };
+
+        let timerSeconds = 30; // Initial timer value in seconds
+        let timerInterval; // Variable to store the timer interval
+
+        function displayEmoji(team) {
+            const emojiDisplayId = team === 'A' ? 'emoji-display' : 'emoji-display-b';
+            const serialNumberId = team === 'A' ? 'serial-number-a' : 'serial-number-b';
+            const emojiData = team === 'A' ? emojiDataA : emojiDataB;
+
+            document.getElementById(emojiDisplayId).innerHTML = emojiData[team === 'A' ? currentEmojiIndexA : currentEmojiIndexB].emoji;
+            document.getElementById(serialNumberId).innerHTML = `#${emojiData[team === 'A' ? currentEmojiIndexA : currentEmojiIndexB].slno}`;
+        }
+
+        function revealAnswer(team) {
+            const resultId = team === 'A' ? 'result' : 'result-b';
+            const emojiData = team === 'A' ? emojiDataA : emojiDataB;
+            const currentEmojiIndex = team === 'A' ? currentEmojiIndexA : currentEmojiIndexB;
+
+            document.getElementById(resultId).innerText = emojiData[currentEmojiIndex].name;
+        }
+
+        function prevEmoji(team) {
+            if (team === 'A' && currentEmojiIndexA > 0) {
+                currentEmojiIndexA--;
+                displayEmoji('A');
+                document.getElementById('result').innerText = '';
+            } else if (team === 'B' && currentEmojiIndexB > 0) {
+                currentEmojiIndexB--;
+                displayEmoji('B');
+                document.getElementById('result-b').innerText = '';
+            }
+
+            // Enable the "Next Emoji" button
+            const nextBtnId = team === 'A' ? 'next-btn-a' : 'next-btn-b';
+            const nextBtn = document.getElementById(nextBtnId);
+            nextBtn.disabled = false;
+            nextBtn.style.backgroundColor = '#4CAF50'; // Change the button color when enabled
+        }
+        function startTimer() {
+            clearInterval(timerInterval); // Clear any existing interval
+            timerSeconds = 30; // Reset timer to 30 seconds
+            document.getElementById('timer-display').innerText = timerSeconds;
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function nextEmoji(team) {
+            const currentEmojiIndex = team === 'A' ? currentEmojiIndexA : currentEmojiIndexB;
+            const emojiData = team === 'A' ? emojiDataA : emojiDataB;
+
+            if (team === 'A' && currentEmojiIndexA < emojiData.length - 1) {
+                currentEmojiIndexA++;
+            } else if (team === 'B' && currentEmojiIndexB < emojiData.length - 1) {
+                currentEmojiIndexB++;
+            }
+
+            displayEmoji(team);
+            const resultId = team === 'A' ? 'result' : 'result-b';
+            document.getElementById(resultId).innerText = '';
+
+            // Disable the "Next Emoji" button when it reaches the end
+            const nextBtnId = team === 'A' ? 'next-btn-a' : 'next-btn-b';
+            if (currentEmojiIndex === emojiData.length - 2) {
+                const nextBtn = document.getElementById(nextBtnId);
+                nextBtn.disabled = true;
+                nextBtn.style.backgroundColor = '#cccccc'; // Change the button color when disabled
+            }
+            startTimer(); // Start the timer when the "Next Emoji" button is clicked
+        }
+
+        function incrementScore(team) {
+            const teamScoreId = team === 'A' ? 'team-scores-a' : 'team-scores-b';
+            const teamScore = team === 'A' ? teamAScore : teamBScore;
+
+            teamScore.correct++;
+
+            const correctScoreSpan = document.querySelector(`#${teamScoreId} .correct-score`);
+            correctScoreSpan.textContent = teamScore.correct;
+        }
+
+        function incrementIncorrect(team) {
+            const teamScoreId = team === 'A' ? 'team-scores-a' : 'team-scores-b';
+            const teamScore = team === 'A' ? teamAScore : teamBScore;
+
+            teamScore.incorrect++;
+
+            const incorrectScoreSpan = document.querySelector(`#${teamScoreId} .incorrect-score`);
+            incorrectScoreSpan.textContent = teamScore.incorrect;
+        }
+
+        function updateTimer() {
+            if (timerSeconds > 0) {
+                timerSeconds--;
+                document.getElementById('timer-display').innerText = timerSeconds;
+            } else {
+                clearInterval(timerInterval);
+                alert('Timer Up!'); // You can replace this with any action you want.
+            }
+        }
+
+        function finishGame() {
+            // Determine the winner
+            let winner = '';
+            if (teamAScore.correct > teamBScore.correct) {
+                winner = 'Team A';
+            } else if (teamBScore.correct > teamAScore.correct) {
+                winner = 'Team B';
+            } else {
+                winner = 'It\'s a tie!';
+            }
+
+            // Display winner message in the modal
+            document.getElementById('winner-message').innerText = `Winner: ${winner}`;
+
+            // Show the modal
+            document.getElementById('winnerModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            // Close the modal
+            document.getElementById('winnerModal').style.display = 'none';
+        }
+
+        // Initial setup
+        displayEmoji('A');
+        displayEmoji('B');
+        startTimer(); // Start the timer when the page loads
+    </script>
+
+</body>
+
+</html>
